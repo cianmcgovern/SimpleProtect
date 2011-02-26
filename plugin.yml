@@ -1,0 +1,61 @@
+name: SimpleProtect
+main: com.cianmcgovern.simpleprotect.SimpleProtect
+version: 2.1
+website: http://www.majorgaming.eu
+author: cian1500ww
+description: >
+             Allows for simple protection of a cuboid
+commands:
+  pm:
+    description: Enter protect mode
+    usage: |
+           /<command>
+           Example: /<command>
+           
+  cinfo:
+    description: Point to a block and find out if it is protected or not
+    usage: |
+           /<command>
+           Example: /<command>
+           
+  c1:
+    description: Set the first block of cuboid
+    usage: |
+           /<command>
+           Example: /<command>       
+           
+  c2:
+    description: Set the second block of cuboid
+    usage: |
+           /<command>
+           Example: /<command>  
+           
+  cstatus:
+    description: See the protection status of the target block
+    usage: |
+           /<command>
+           Example: /<command>
+           
+  cdel:
+    description: Delete a proteced area
+    usage: |
+           /<command>
+           Example: /<command>
+           
+  cadd:
+    description: Add a player to a protected area
+    usage: |
+           /<command> [player]
+           Example: /<command> cian1500ww
+           
+  callow:
+    description: Allow a player to modify blocks in a protected area
+    usage: |
+           /<command> [player]
+           Example: /<command> cian1500ww
+           
+  cdisallow:
+    description: Remove a players ability to add/modify blocks in a protected area
+    usage: |
+           /<command> [player]
+           Example: /<command> [player]                                          
