@@ -109,7 +109,7 @@ public class SimpleProtect extends JavaPlugin {
     	String commandName = command.getName().toLowerCase();
         Player player = (Player)sender;
     	
-        if (protectors.contains(player.getName())) {
+        if (protectors.contains(player.getName()) || player.isOp()==true) {
             
         	// Entering protect mode
         	if (commandName.equalsIgnoreCase("pm")) {
