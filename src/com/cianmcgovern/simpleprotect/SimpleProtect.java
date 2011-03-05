@@ -69,7 +69,7 @@ public class SimpleProtect extends JavaPlugin {
         pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.High, this);
         pm.registerEvent(Event.Type.BLOCK_BURN, blockListener, Priority.High, this);
         
-        System.out.println("SimpleProtect by cian1500ww is enabled!!");
+        System.out.println("SimpleProtect Version 2.1 by cian1500ww is enabled!!");
     }
     public void onDisable() {
         // TODO: Place any custom disable code here
@@ -126,7 +126,7 @@ public class SimpleProtect extends JavaPlugin {
             } 
         	
         	// Carrying out cinfo command
-        	else if (commandName.equalsIgnoreCase("cinfo")) {
+        	else if (commandName.equalsIgnoreCase("pinfo")) {
                 AimBlock aiming = new AimBlock(player);
                 Block block = aiming.getTargetBlock();
                 if (block == null) {
