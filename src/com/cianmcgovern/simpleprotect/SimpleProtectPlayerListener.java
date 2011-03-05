@@ -1,7 +1,9 @@
 package com.cianmcgovern.simpleprotect;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class SimpleProtectPlayerListener extends PlayerListener {
 
     public SimpleProtectPlayerListener(SimpleProtect instance) {
         plugin = instance;
+        
         load();
     }
     
@@ -65,13 +68,35 @@ public class SimpleProtectPlayerListener extends PlayerListener {
     
 
     public static void load() {
+    	
+    	String dir = "plugins/SimpleProtect";
+    	boolean success = (new File(dir)).exists();
+    		if (success==false) {
+    			new File(dir).mkdir();
+    			
+    	}
+    	
+    	File in = new File("plugins/SimpleProtect/protect.dat");
+    	if(in.exists()!=true){
+    		try {
+    		System.out.println("SimpleProtect: No protect.dat file found, creating blank default now!!");
+    		in.createNewFile();
+    		}
+    		catch (IOException e){
+    			System.out.println("SimpleProtect: Error creating protect.dat file!!");
+    			e.printStackTrace();
+    		}
+    	}
         try {
             FileInputStream fin = new FileInputStream("plugins/SimpleProtect/protect.dat");
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            areas = (ArrayList<ProtectedArea>) ois.readObject();
-            ois.close();
+            if(in.length()>0){
+            	ObjectInputStream ois = new ObjectInputStream(fin);
+            	areas = (ArrayList<ProtectedArea>) ois.readObject();
+            	ois.close();
+            }
         } catch (Exception e) {
         	System.out.println("SimpleProtect: Error loading protect.dat!");
+        	e.printStackTrace();
         }
     }
 

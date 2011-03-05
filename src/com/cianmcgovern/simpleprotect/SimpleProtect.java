@@ -40,13 +40,6 @@ public class SimpleProtect extends JavaPlugin {
 
         // Register our events
         PluginManager pm = getServer().getPluginManager();
-        
-        String dir = "plugins/SimpleProtect";
-    	boolean success = (new File(dir)).exists();
-    		if (success==false) {
-    			new File(dir).mkdir();
-    			
-    	}
     	
     	String f = "plugins/SimpleProtect/protectors.txt";
     	File in = new File(f);
@@ -67,20 +60,7 @@ public class SimpleProtect extends JavaPlugin {
             Logger.getLogger(SimpleProtect.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        File dat = new File("plugins/SimpleProtect/protect.dat");
-        if(dat.exists()!=true){
-        	try {
-        		System.out.println("SimpleProtect: No protect.dat file found, creating blank default now!!");
-        		
-					dat.createNewFile();
-				} catch (IOException e) {
-					System.out.println("SimpleProtect: Error creating protect.dat file!!");
-					e.printStackTrace();
-				}
-      
-        }
-        
-        SimpleProtectPlayerListener.load();
+        //SimpleProtectPlayerListener.load();
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
         pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.High, this);
