@@ -12,7 +12,7 @@ commands:
            /<command>
            Example: /<command>
            
-  cinfo:
+  pinfo:
     description: Point to a block and find out if it is protected or not
     usage: |
            /<command>
