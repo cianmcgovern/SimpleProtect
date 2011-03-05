@@ -2,7 +2,7 @@ name: SimpleProtect
 main: com.cianmcgovern.simpleprotect.SimpleProtect
 version: 2.1
 website: http://www.majorgaming.eu
-author: cian1500ww
+author: Cian Mc Govern
 description: >
              Allows for simple protection of a cuboid
 commands:

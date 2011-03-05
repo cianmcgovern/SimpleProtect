@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockDamageLevel;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -15,42 +17,41 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class SimpleProtectBlockListener extends BlockListener {
 
     private final SimpleProtect plugin;
-    private final int[] BANNED_BLOCKS = {46};
 
     public SimpleProtectBlockListener(SimpleProtect plugin) {
         this.plugin = plugin;
     }
 
-    public void onBlockDamage(BlockDamageEvent event) {
-        if (!plugin.protectors.contains(event.getPlayer().getName().toLowerCase())) {
-            if (event.getDamageLevel() == BlockDamageLevel.BROKEN) {
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (!plugin.protectors.contains(event.getPlayer().getName().toLowerCase()) || event.getPlayer().isOp()==true) {
+            if (!event.isCancelled()) {
                 Block b = event.getBlock();
                 int[] coords = {b.getX(), b.getY() + 1, b.getZ()};
-                ArrayList<String> f = plugin.playerListener.getProtection(coords);
+                ArrayList<String> f = SimpleProtectPlayerListener.getProtection(coords);
                 if (!(f == null || f.contains(event.getPlayer().getName()))) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage("Protected area.  Cannot destroy.");
+                    event.getPlayer().sendMessage("Protected area. Cannot destroy.");
                 }
             }
         }
     }
 
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (!plugin.protectors.contains(event.getPlayer().getName().toLowerCase())) {
+        if (!plugin.protectors.contains(event.getPlayer().getName().toLowerCase()) || event.getPlayer().isOp()==true) {
             Block b = event.getBlock();
             int[] coords = {b.getX(), b.getY() + 1, b.getZ()};
-            ArrayList<String> f = plugin.playerListener.getProtectionOffset(coords, isBanned(event.getBlock().getTypeId()) ? 10 : 0);
+            ArrayList<String> f = SimpleProtectPlayerListener.getProtection(coords);
             if (!(f == null || f.contains(event.getPlayer().getName()))) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage("Protected area.  Cannot build here.");
             }
-        }
+       }
     }
 
     public void onBlockFlow(BlockFromToEvent event) {
         Block b = event.getBlock();
         int[] coords = {b.getX(), b.getY() + 1, b.getZ()};
-        ArrayList<String> f = plugin.playerListener.getProtectionOffset(coords,1);
+        ArrayList<String> f = SimpleProtectPlayerListener.getProtectionOffset(coords,1);
         if (!(f == null)) {
             event.setCancelled(true);
         }
@@ -60,25 +61,30 @@ public class SimpleProtectBlockListener extends BlockListener {
         Player player = null;
         if (event.getPlayer() != null)
             player = event.getPlayer();
-        if (!plugin.protectors.contains((player == null ? "foo" : player.getName().toLowerCase()))) {
+        if (!plugin.protectors.contains((player == null ? "foo" : player.getName().toLowerCase())) || event.getPlayer().isOp()==true) {
             Block b = event.getBlock();
             int[] coords = {b.getX(), b.getY() + 1, b.getZ()};
-            ArrayList<String> f = plugin.playerListener.getProtectionOffset(coords,1);
+            ArrayList<String> f = SimpleProtectPlayerListener.getProtectionOffset(coords,1);
 
-            if (!(f == null || f.contains((player == null ? "foo" : player.getName())))) {
-                event.setCancelled(true);
-                if (player != null)
-                    player.sendMessage("Protected area.  Cannot ignite here.");
+            if (!(f == null || f.contains((player == null ? "foo" : player.getName())))){
+            	event.setCancelled(true);
+            	if(event.getPlayer()!=null)
+            		player.sendMessage("Protected area.  Cannot ignite here.");
             }
         }
     }
     
-    private boolean isBanned(int id) {
-        for (int z : this.BANNED_BLOCKS) {
-            if (z == id)
-                return true;
-        }
-        return false;
+    public void onBlockBurn(BlockBurnEvent event) {
+        
+            Block b = event.getBlock();
+            int[] coords = {b.getX(), b.getY() + 1, b.getZ()};
+            ArrayList<String> f = SimpleProtectPlayerListener.getProtectionOffset(coords,1);
+            if (!(f == null || f.contains(coords))) {
+                event.setCancelled(true);
+                System.out.println("Inside burn cancel");
+            }
+            
             
     }
+    
 }

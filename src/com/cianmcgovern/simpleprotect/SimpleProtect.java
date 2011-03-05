@@ -23,23 +23,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.bukkit.entity.Player;
-
-import com.cianmcgovern.simpleprotect.SimpleProtectPlayerListener.*;
 /**
  * SimpleProtect for Bukkit
  *
- * @author Philip Daian
+ * @author Philip Daian, Cian Mc Govern
  */
 public class SimpleProtect extends JavaPlugin {
     protected final SimpleProtectPlayerListener playerListener = new SimpleProtectPlayerListener(this);
     protected final SimpleProtectBlockListener blockListener = new SimpleProtectBlockListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     protected ArrayList<String> protectors;
-
-    public SimpleProtect(PluginLoader pluginLoader, Server instance, PluginDescriptionFile desc, File folder, File plugin, ClassLoader cLoader) {
-    }
     
     public void onEnable() {
         // TODO: Place any custom enable code here including the registration of any events
@@ -60,13 +54,10 @@ public class SimpleProtect extends JavaPlugin {
     		try {
     		System.out.println("SimpleProtect: No protectors.txt file found, creating blank default now!!");
     		in.createNewFile();
-    		/*BufferedWriter out = new BufferedWriter(new FileWriter(in, true));
-    		out.write("#ItemID=Amount.username");
-    		out.newLine();
-    		out.close();*/
     		}
     		catch (IOException e){
     			System.out.println("SimpleProtect: Error creating protectors.txt file!!");
+    			e.printStackTrace();
     		}
     	}
         
@@ -75,16 +66,30 @@ public class SimpleProtect extends JavaPlugin {
         } catch (IOException ex) {
             Logger.getLogger(SimpleProtect.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+        File dat = new File("plugins/SimpleProtect/protect.dat");
+        if(dat.exists()!=true){
+        	try {
+        		System.out.println("SimpleProtect: No protect.dat file found, creating blank default now!!");
+        		
+					dat.createNewFile();
+				} catch (IOException e) {
+					System.out.println("SimpleProtect: Error creating protect.dat file!!");
+					e.printStackTrace();
+				}
+      
+        }
+        
+        SimpleProtectPlayerListener.load();
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
-        pm.registerEvent(Event.Type.PLAYER_COMMAND, playerListener, Priority.High, this);
-        pm.registerEvent(Event.Type.BLOCK_DAMAGED, blockListener, Priority.High, this);
+        pm.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.High, this);
         pm.registerEvent(Event.Type.BLOCK_PLACED, blockListener, Priority.High, this);
         pm.registerEvent(Event.Type.BLOCK_FLOW, blockListener, Priority.High, this);
         pm.registerEvent(Event.Type.BLOCK_IGNITE, blockListener, Priority.High, this);
+        pm.registerEvent(Event.Type.BLOCK_BURN, blockListener, Priority.High, this);
         
-
+        System.out.println("SimpleProtect by cian1500ww is enabled!!");
     }
     public void onDisable() {
         // TODO: Place any custom disable code here
@@ -92,7 +97,8 @@ public class SimpleProtect extends JavaPlugin {
         // NOTE: All registered events are automatically unregistered when a plugin is disabled
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
-        System.out.println("Derezing SimpleProtect!");
+        System.out.println("Disabling SimpleProtect!");
+        SimpleProtectPlayerListener.save();
     }
     public boolean isDebugging(final Player player) {
         if (debugees.containsKey(player)) {
@@ -171,7 +177,7 @@ public class SimpleProtect extends JavaPlugin {
                     } else {
                         int[] coords = {block.getX(), block.getY() + 1, block.getZ()};
                         player.sendMessage("Selecting block " + coords[0] + ", " + coords[1] + ", " + coords[2]);
-                        if (commandName.equalsIgnoreCase("/c1")) {
+                        if (commandName.equalsIgnoreCase("c1")) {
                             pinfo.setC1(coords);
                         } else {
                             pinfo.setC2(coords);
@@ -221,12 +227,13 @@ public class SimpleProtect extends JavaPlugin {
             } 
         	
         	// Checking to see if player added arguments and carrying out cadd, callow or cdisallow for the args/player
-        	else if (trimmedArgs.length > 1) {
+        	else if (trimmedArgs.length > 0) {
                 if (commandName.equalsIgnoreCase("cadd")) {
                     PlayerInfo pinfo = SimpleProtectPlayerListener.findProtecting(player.getName());
                     if (pinfo == null) {
                         player.sendMessage("Error: You are not in protect mode");
-                    } else if (!Arrays.equals(pinfo.getC1(), SimpleProtectPlayerListener.ZERO) && !Arrays.equals(pinfo.getC2(), SimpleProtectPlayerListener.ZERO)) {
+                    } //else if (!Arrays.equals(pinfo.getC1(), SimpleProtectPlayerListener.ZERO) && !Arrays.equals(pinfo.getC2(), SimpleProtectPlayerListener.ZERO)) {
+                    else if (!Arrays.equals(pinfo.getC1(), SimpleProtectPlayerListener.ZERO) && !Arrays.equals(pinfo.getC2(), SimpleProtectPlayerListener.ZERO)) {
                         player.sendMessage("Protection to " + trimmedArgs[0] + " successful.");
                         ProtectedArea t = new ProtectedArea(pinfo.getC1(), pinfo.getC2(), trimmedArgs[0]);
                         SimpleProtectPlayerListener.areas.add(t);

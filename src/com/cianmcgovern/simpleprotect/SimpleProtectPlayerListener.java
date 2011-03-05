@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerListener;
 
 /**
  * Handle events for all Player related events
- * @author Philip Daian
+ * @author Philip Daian, Cian Mc Govern
  */
 
 public class SimpleProtectPlayerListener extends PlayerListener {
@@ -64,24 +64,25 @@ public class SimpleProtectPlayerListener extends PlayerListener {
     
     
 
-    private void load() {
+    public static void load() {
         try {
-            FileInputStream fin = new FileInputStream("protect.dat");
+            FileInputStream fin = new FileInputStream("plugins/SimpleProtect/protect.dat");
             ObjectInputStream ois = new ObjectInputStream(fin);
-            this.areas = (ArrayList<ProtectedArea>) ois.readObject();
+            areas = (ArrayList<ProtectedArea>) ois.readObject();
             ois.close();
         } catch (Exception e) {
+        	System.out.println("SimpleProtect: Error loading protect.dat!");
         }
     }
 
     public static void save() {
         try {
-            FileOutputStream fout = new FileOutputStream("protect.dat");
+            FileOutputStream fout = new FileOutputStream("plugins/SimpleProtect/protect.dat");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(areas);
             oos.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("SimpleProtect: Error saving to protect.dat!");
         }
     }
     
